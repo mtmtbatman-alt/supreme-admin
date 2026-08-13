@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>로그인 - Supreme TV Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-zinc-950 text-white min-h-screen flex items-center justify-center p-4">
+
+  <div class="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-md p-8 shadow-2xl">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-black text-red-600 tracking-wider mb-2">SUPREME ADMIN</h1>
+      <p class="text-xs text-zinc-400">최고 관리자 인증 후 진입이 가능합니다.</p>
+    </div>
+
+    <form id="loginForm" class="space-y-5">
+      <div>
+        <label class="block text-xs font-semibold text-zinc-400 mb-1.5">관리자 이메일</label>
+        <input 
+          type="email" 
+          id="loginEmail" 
+          required 
+          placeholder="admin@example.com"
+          class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-red-500 transition"
+        >
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-zinc-400 mb-1.5">비밀번호</label>
+        <input 
+          type="password" 
+          id="loginPassword" 
+          required 
+          placeholder="••••••••"
+          class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-red-500 transition"
+        >
+      </div>
+
+      <button 
+        type="submit" 
+        id="loginSubmitBtn"
+        class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 rounded-xl text-sm transition shadow-lg shadow-red-600/20 mt-2"
+      >
+        보안 로그인
+      </button>
+    </form>
+  </div>
+
+  <script type="module">
+    import { supabase } from './js/config.js';
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      const btn = document.getElementById('loginSubmitBtn');
+
+      btn.disabled = true;
+      btn.textContent = '인증 진행 중...';
+
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        alert('로그인 실패: ' + error.message);
+        btn.disabled = false;
+        btn.textContent = '보안 로그인';
+      } else {
+        alert('로그인 성공!');
+        window.location.href = 'dashboard.html';
+      }
+    });
+  </script>
+</body>
+</html>
