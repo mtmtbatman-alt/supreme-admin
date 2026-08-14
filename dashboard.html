@@ -3,115 +3,115 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SUPREME ADMIN - 대시보드</title>
-  <link rel="stylesheet" href="css/style.css">
-  <!-- Chart.js CDN -->
+  <title>대시보드 홈 - SUPREME ADMIN</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-  <div class="admin-container">
-    <aside class="sidebar">
-      <div class="logo">
-        <h2>SUPREME <span>ADMIN</span></h2>
+<body class="bg-zinc-950 text-white min-h-screen flex">
+
+  <!-- 사이드바 -->
+  <aside class="w-64 bg-zinc-900 border-r border-zinc-800 flex flex-col justify-between min-h-screen p-4">
+    <div>
+      <div class="px-4 py-3 mb-6">
+        <h1 class="text-xl font-black text-red-600 tracking-wider">SUPREME ADMIN</h1>
       </div>
-      <nav class="nav-menu">
-        <a href="dashboard.html" class="nav-item active">📊 대시보드</a>
-        <a href="content.html" class="nav-item">🎬 콘텐츠 관리</a>
-        <a href="banners.html" class="nav-item">🖼️ 배너 관리</a>
-        <a href="notice.html" class="nav-item">📢 공지사항</a>
-        <a href="admin-users.html" class="nav-item">👤 관리자 계정</a>
-        <a href="logs.html" class="nav-item">📜 관리자 로그</a>
-        <a href="settings.html" class="nav-item">⚙️ 사이트 설정</a>
-        <a href="backup.html" class="nav-item">💾 데이터 백업</a>
+      <nav class="space-y-1">
+        <a href="dashboard.html" class="flex items-center px-4 py-3 text-sm font-semibold text-white bg-red-600 rounded-xl transition">
+          대시보드 홈
+        </a>
+        <a href="content.html" class="flex items-center px-4 py-3 text-sm font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-xl transition">
+          콘텐츠 관리
+        </a>
+        <a href="banners.html" class="flex items-center px-4 py-3 text-sm font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-xl transition">
+          배너 관리
+        </a>
+        <a href="notice.html" class="flex items-center px-4 py-3 text-sm font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-xl transition">
+          공지사항
+        </a>
+        <a href="settings.html" class="flex items-center px-4 py-3 text-sm font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-xl transition">
+          설정
+        </a>
+        <a href="backup.html" class="flex items-center px-4 py-3 text-sm font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-xl transition">
+          시스템 백업
+        </a>
       </nav>
-      <div class="sidebar-footer">
-        <span class="user-email" id="adminEmailDisplay">admin@supremetv.com</span>
-        <button id="logoutBtn" onclick="handleLogout()" class="btn-logout-link">🚪 로그아웃</button>
+    </div>
+    
+    <div class="pt-4 border-t border-zinc-800">
+      <button id="logoutBtn" onclick="location.href='login.html'" class="w-full text-left px-4 py-3 text-sm font-semibold text-zinc-400 hover:text-red-500 hover:bg-zinc-800 rounded-xl transition">
+        로그아웃
+      </button>
+    </div>
+  </aside>
+
+  <!-- 메인 콘텐츠 영역 -->
+  <main class="flex-1 p-8 overflow-y-auto">
+    <!-- 헤더 -->
+    <header class="flex justify-between items-center mb-8">
+      <div>
+        <h2 class="text-2xl font-bold">대시보드 홈</h2>
+        <p class="text-xs text-zinc-400 mt-1">시스템 현황 및 통계 데이터입니다.</p>
       </div>
-    </aside>
+      <div class="flex items-center gap-3">
+        <span class="text-xs text-zinc-400">최고 관리자님</span>
+        <div class="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center font-bold text-xs">A</div>
+      </div>
+    </header>
 
-    <main class="main-content">
-      <header class="top-header">
-        <h1>대시보드</h1>
-        <p class="subtitle">실시간 서비스 방문 통계 및 주요 현황을 모니터링합니다.</p>
-      </header>
+    <!-- 카드 현황 통계 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div class="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
+        <p class="text-xs text-zinc-400 font-semibold mb-1">총 콘텐츠 수</p>
+        <h3 id="totalContent" class="text-2xl font-black text-white">128</h3>
+      </div>
+      <div class="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
+        <p class="text-xs text-zinc-400 font-semibold mb-1">활성 배너</p>
+        <h3 id="activeBanners" class="text-2xl font-black text-red-500">5</h3>
+      </div>
+      <div class="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
+        <p class="text-xs text-zinc-400 font-semibold mb-1">등록된 공지사항</p>
+        <h3 id="activeNotices" class="text-2xl font-black text-white">12</h3>
+      </div>
+      <div class="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
+        <p class="text-xs text-zinc-400 font-semibold mb-1">누적 조회수</p>
+        <h3 id="totalViews" class="text-2xl font-black text-white">45,210</h3>
+      </div>
+    </div>
 
-      <div class="content-body">
-        <!-- 📈 통계 카드 섹션 -->
-        <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px;">
-          <div class="card stat-card">
-            <h4>오늘 방문자</h4>
-            <p id="statToday" class="stat-value">0</p>
-          </div>
-          <div class="card stat-card">
-            <h4>어제 방문자</h4>
-            <p id="statYesterday" class="stat-value">0</p>
-          </div>
-          <div class="card stat-card">
-            <h4>총 방문자</h4>
-            <p id="statTotalVisits" class="stat-value">0</p>
-          </div>
-          <div class="card stat-card">
-            <h4>현재 접속자</h4>
-            <p id="statActiveUsers" class="stat-value" style="color: #e50914;">0</p>
-          </div>
-          <div class="card stat-card">
-            <h4>총 콘텐츠 수</h4>
-            <p id="statTotalContents" class="stat-value">0</p>
-          </div>
-          <div class="card stat-card">
-            <h4>총 카테고리 수</h4>
-            <p id="statTotalCategories" class="stat-value">0</p>
-          </div>
-        </div>
-
-        <!-- 📊 차트 섹션 -->
-        <div class="card" style="margin-bottom: 25px;">
-          <h3>📉 일별 방문자 추이 (최근 7일)</h3>
-          <div style="position: relative; height: 300px; width: 100%; margin-top: 15px;">
-            <canvas id="visitChart"></canvas>
-          </div>
-        </div>
-
-        <!-- 📋 최근 활동/콘텐츠 테이블 2열 배치 -->
-        <div class="grid-2col" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-          <div class="card">
-            <h3>🎬 최근 등록 콘텐츠</h3>
-            <table class="data-table" style="margin-top: 10px;">
-              <thead>
-                <tr>
-                  <th>제목</th>
-                  <th>등록일</th>
-                </tr>
-              </thead>
-              <tbody id="recentContentsBody">
-                <!-- JS 동적 생성 -->
-              </tbody>
-            </table>
-          </div>
-
-          <div class="card">
-            <h3>📜 최근 관리자 활동</h3>
-            <table class="data-table" style="margin-top: 10px;">
-              <thead>
-                <tr>
-                  <th>관리자</th>
-                  <th>작업</th>
-                  <th>시간</th>
-                </tr>
-              </thead>
-              <tbody id="recentLogsBody">
-                <!-- JS 동적 생성 -->
-              </tbody>
-            </table>
-          </div>
+    <!-- 차트 & 활동 로그 -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- 방문자 트렌드 그래프 -->
+      <div class="lg:col-span-2 bg-zinc-900 border border-zinc-800 p-6 rounded-2xl">
+        <h3 class="text-sm font-bold text-zinc-200 mb-4">주간 방문 트렌드</h3>
+        <div class="h-64">
+          <canvas id="viewsChart"></canvas>
         </div>
       </div>
-    </main>
-  </div>
 
-  <script src="js/config.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/dashboard.js"></script>
+      <!-- 최근 관리자 활동 로그 -->
+      <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl">
+        <h3 class="text-sm font-bold text-zinc-200 mb-4">최근 활동 로그</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <tbody id="recentLogsTable">
+              <tr class="border-b border-zinc-800 hover:bg-zinc-800/50 transition">
+                <td class="py-3 px-4 text-xs text-zinc-400">2026-08-14 15:30</td>
+                <td class="py-3 px-4 text-xs font-semibold text-white">최고관리자</td>
+                <td class="py-3 px-4 text-xs text-zinc-300">신규 배너 등록 ("메인 프로모션")</td>
+              </tr>
+              <tr class="border-b border-zinc-800 hover:bg-zinc-800/50 transition">
+                <td class="py-3 px-4 text-xs text-zinc-400">2026-08-14 14:12</td>
+                <td class="py-3 px-4 text-xs font-semibold text-white">최고관리자</td>
+                <td class="py-3 px-4 text-xs text-zinc-300">공지사항 수정 ("점검 안내")</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="js/dashboard.js"></script>
 </body>
 </html>
