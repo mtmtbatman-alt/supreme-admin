@@ -3,77 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>로그인 - Supreme TV Admin</title>
+  <title>로그인 - SUPREME ADMIN</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="bg-zinc-950 text-white min-h-screen flex items-center justify-center p-4">
+<body class="bg-zinc-950 text-white min-h-screen flex items-center justify-center p-4 selection:bg-red-600 selection:text-white">
 
-  <div class="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-md p-8 shadow-2xl">
-    <div class="text-center mb-8">
-      <h1 class="text-3xl font-black text-red-600 tracking-wider mb-2">SUPREME ADMIN</h1>
-      <p class="text-xs text-zinc-400">최고 관리자 인증 후 진입이 가능합니다.</p>
-    </div>
-
-    <form id="loginForm" class="space-y-5">
-      <div>
-        <label class="block text-xs font-semibold text-zinc-400 mb-1.5">관리자 이메일</label>
-        <input 
-          type="email" 
-          id="loginEmail" 
-          required 
-          value="admin@example.com"
-          placeholder="admin@example.com"
-          class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-red-500 transition"
-        >
-      </div>
-
-      <div>
-        <label class="block text-xs font-semibold text-zinc-400 mb-1.5">비밀번호</label>
-        <input 
-          type="password" 
-          id="loginPassword" 
-          required 
-          value="1234"
-          placeholder="••••••••"
-          class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-red-500 transition"
-        >
-      </div>
-
-      <button 
-        type="submit" 
-        id="loginSubmitBtn"
-        class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 rounded-xl text-sm transition shadow-lg shadow-red-600/20 mt-2"
-      >
-        보안 로그인
-      </button>
-    </form>
+  <!-- 배경 장식 요소 -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute -top-40 -left-40 w-96 h-96 bg-red-600/10 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-red-900/10 rounded-full blur-3xl"></div>
   </div>
 
-  <script type="module">
-    import { supabase } from './js/config.js';
+  <!-- 로그인 카트 -->
+  <div class="w-full max-w-md bg-zinc-900/90 border border-zinc-800 backdrop-blur-xl p-8 rounded-2xl shadow-2xl relative z-10">
+    
+    <!-- 로고 영역 -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center gap-2 mb-2">
+        <div class="w-3 h-3 rounded-full bg-red-600 animate-pulse"></div>
+        <h1 class="text-2xl font-black text-red-600 tracking-wider">SUPREME ADMIN</h1>
+      </div>
+      <p class="text-xs text-zinc-400">최고 관리자 전용 인증 센터</p>
+    </div>
 
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const email = document.getElementById('loginEmail').value.trim();
-      const password = document.getElementById('loginPassword').value.trim();
-      const btn = document.getElementById('loginSubmitBtn');
+    <!-- 로그인 폼 -->
+    <form id="loginForm" class="space-y-5">
+      <div>
+        <label for="email" class="block text-xs text-zinc-400 mb-1.5 font-medium">관리자 이메일</label>
+        <div class="relative">
+          <i data-lucide="mail" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500"></i>
+          <input type="email" id="email" required placeholder="admin@supreme.com" class="w-full bg-zinc-800/80 border border-zinc-700/80 text-xs text-white pl-10 pr-4 py-3 rounded-xl outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition">
+        </div>
+      </div>
 
-      btn.disabled = true;
-      btn.textContent = '인증 진행 중...';
+      <div>
+        <div class="flex justify-between items-center mb-1.5">
+          <label for="password" class="block text-xs text-zinc-400 font-medium">비밀번호</label>
+          <a href="#" id="forgotPasswordBtn" class="text-[11px] text-zinc-500 hover:text-red-400 transition">비밀번호 재설정</a>
+        </div>
+        <div class="relative">
+          <i data-lucide="lock" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500"></i>
+          <input type="password" id="password" required placeholder="••••••••" class="w-full bg-zinc-800/80 border border-zinc-700/80 text-xs text-white pl-10 pr-4 py-3 rounded-xl outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition">
+        </div>
+      </div>
 
-      try {
-        // Supabase 정식 로그인 시도
-        await supabase.auth.signInWithPassword({ email, password });
-      } catch (err) {
-        console.log("Supabase 미연동 fallback 작동");
-      }
+      <!-- 에러 메시지 출력 영역 -->
+      <div id="errorMessage" class="hidden p-3 bg-red-950/50 border border-red-800/50 rounded-xl text-red-400 text-xs text-center font-medium"></div>
 
-      // 무조건 대시보드로 이동 성공 처리
-      sessionStorage.setItem('isLoggedIn', 'true');
-      window.location.href = 'dashboard.html';
-    });
-  </script>
+      <!-- 로그인 버튼 -->
+      <button type="submit" id="loginBtn" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-bold text-xs py-3.5 rounded-xl shadow-lg shadow-red-600/30 transition flex items-center justify-center gap-2">
+        <i data-lucide="log-in" class="w-4 h-4"></i> 대시보드 로그인
+      </button>
+    </form>
+
+    <!-- 하단 풋터 -->
+    <div class="mt-8 text-center border-t border-zinc-800/80 pt-4">
+      <p class="text-[11px] text-zinc-500">
+        보안 등급: High Security Level 3 Enabled
+      </p>
+    </div>
+  </div>
+
+  <script type="module" src="js/login.js"></script>
 </body>
 </html>
