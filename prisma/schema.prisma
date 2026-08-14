@@ -1,0 +1,99 @@
+// 슈프림티비 OTT CMS V4 - 프로덕션 데이터베이스 스키마
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 1. 관리자 계정 및 권한 시스템
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+  MODERATOR
+  VIEWER
+}
+
+model Admin {
+  id            String       @id @default(uuid())
+  email         String       @unique
+  username      String       @unique
+  passwordHash  String
+  role          Role         @default(VIEWER)
+  isTwoFactor   Boolean      @default(false)
+  secret2FA     String?
+  failedAttempts Int         @default(0)
+  lockUntil     DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  logs          AdminLog[]
+}
+
+// 2. 관리자 작업 로그 시스템
+model AdminLog {
+  id          String   @id @default(uuid())
+  adminId     String
+  admin       Admin    @relation(fields: [adminId], references: [id])
+  action      String   // LOGIN, LOGOUT, CREATE, UPDATE, DELETE 등
+  target      String   // 대상 자원 (Content, Banner, Notice 등)
+  ip          String
+  browser     String
+  device      String
+  createdAt   DateTime @default(now())
+
+  @@index([adminId])
+  @@index([createdAt])
+}
+
+// 3. OTT 콘텐츠 관리 및 버전 제어 (v1 ~ v4)
+enum ContentStatus {
+  DRAFT
+  REVIEWING
+  SCHEDULED
+  PUBLISHED
+  PRIVATE
+  DELETED
+}
+
+model Content {
+  id            String          @id @default(uuid())
+  title         String
+  category      String          // 영화, 드라마, 예능, 애니 등
+  status        ContentStatus   @default(DRAFT)
+  version       Int             @default(1)
+  isFeatured    Boolean         @default(false)
+  publishStart  DateTime?
+  publishEnd    DateTime?
+  seoTitle      String?
+  seoDesc       String?
+  slug          String          @unique
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  versions      ContentVersion[]
+}
+
+model ContentVersion {
+  id          String   @id @default(uuid())
+  contentId   String
+  content     Content  @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  versionNum  Int
+  snapshot    Json     // 콘텐츠 데이터 JSON 스냅샷
+  createdAt   DateTime @default(now())
+
+  @@index([contentId])
+}
+
+// 4. 보안 센터 및 공격 방어 로그
+model SecurityLog {
+  id        String   @id @default(uuid())
+  ip        String
+  event     String   // BRUTE_FORCE, SQL_INJECTION, XSS_ATTEMPT, BLOCKED_IP 등
+  payload   String?
+  createdAt DateTime @default(now())
+
+  @@index([ip])
+  @@index([createdAt])
+}
