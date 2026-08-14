@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>대시보드 홈 - SUPREME ADMIN</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Chart.js 라이브러리 불러오기 -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-zinc-950 text-white min-h-screen flex">
@@ -82,11 +80,57 @@
 
     <!-- 차트 & 활동 로그 -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- 방문자 트렌드 그래프 -->
-      <div class="lg:col-span-2 bg-zinc-900 border border-zinc-800 p-6 rounded-2xl">
-        <h3 class="text-sm font-bold text-zinc-200 mb-4">주간 방문 트렌드</h3>
-        <div class="h-64 relative w-full">
-          <canvas id="viewsChart"></canvas>
+      <!-- 방문자 트렌드 그래프 (SVG 기반 무조건 보임 처리) -->
+      <div class="lg:col-span-2 bg-zinc-900 border border-zinc-800 p-6 rounded-2xl flex flex-col justify-between">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-sm font-bold text-zinc-200">주간 방문 트렌드</h3>
+          <span class="text-xs text-red-500 font-bold bg-red-500/10 px-2.5 py-1 rounded-full">+18.5% 증가</span>
+        </div>
+        
+        <div class="h-56 w-full relative pt-4">
+          <!-- 배경 격자선 -->
+          <div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-10">
+            <div class="border-b border-white w-full"></div>
+            <div class="border-b border-white w-full"></div>
+            <div class="border-b border-white w-full"></div>
+            <div class="border-b border-white w-full"></div>
+          </div>
+
+          <!-- SVG 그래디언트 라인 차트 -->
+          <svg class="w-full h-full overflow-visible" viewBox="0 0 500 150" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#ef4444" stop-opacity="0.4" />
+                <stop offset="100%" stop-color="#ef4444" stop-opacity="0.0" />
+              </linearGradient>
+            </defs>
+
+            <!-- 면적 (채우기) -->
+            <polygon points="0,150 0,110 83,85 166,95 250,55 333,40 416,25 500,10 500,150" fill="url(#chartGradient)" />
+
+            <!-- 라인 -->
+            <polyline points="0,110 83,85 166,95 250,55 333,40 416,25 500,10" fill="none" stroke="#ef4444" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+
+            <!-- 포인트 점들 -->
+            <circle cx="0" cy="110" r="4" fill="#ef4444" />
+            <circle cx="83" cy="85" r="4" fill="#ef4444" />
+            <circle cx="166" cy="95" r="4" fill="#ef4444" />
+            <circle cx="250" cy="55" r="4" fill="#ef4444" />
+            <circle cx="333" cy="40" r="4" fill="#ef4444" />
+            <circle cx="416" cy="25" r="4" fill="#ef4444" />
+            <circle cx="500" cy="10" r="5" fill="#ffffff" stroke="#ef4444" stroke-width="3" />
+          </svg>
+        </div>
+
+        <!-- X축 요일 표시 -->
+        <div class="flex justify-between text-xs text-zinc-500 mt-4 px-1">
+          <span>월</span>
+          <span>화</span>
+          <span>수</span>
+          <span>목</span>
+          <span>금</span>
+          <span>토</span>
+          <span>일</span>
         </div>
       </div>
 
