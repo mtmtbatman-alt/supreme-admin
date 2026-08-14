@@ -1,59 +1,55 @@
-import { supabase } from './config.js';
-
-// DOM 요소
-const totalContentEl = document.getElementById('totalContent');
-const activeBannersEl = document.getElementById('activeBanners');
-const activeNoticesEl = document.getElementById('activeNotices');
-const totalViewsEl = document.getElementById('totalViews');
-const recentLogsTable = document.getElementById('recentLogsTable');
-
-// 페이지 로드 시 실행
 document.addEventListener('DOMContentLoaded', () => {
-  loadStats();
-  loadRecentLogs();
+  if (window.lucide) window.lucide.createIcons();
+  initCharts();
 });
 
-// 통계 데이터 로드
-async function loadStats() {
-  try {
-    if (supabase && supabase.from) {
-      const { count: contentCount } = await supabase.from('contents').select('*', { count: 'exact', head: true });
-      if (totalContentEl && contentCount !== null) totalContentEl.textContent = contentCount;
-
-      const { count: bannerCount } = await supabase.from('banners').select('*', { count: 'exact', head: true });
-      if (activeBannersEl && bannerCount !== null) activeBannersEl.textContent = bannerCount;
-
-      const { count: noticeCount } = await supabase.from('notices').select('*', { count: 'exact', head: true });
-      if (activeNoticesEl && noticeCount !== null) activeNoticesEl.textContent = noticeCount;
-    }
-  } catch (err) {
-    console.log('기본 통계 값 유지');
-  }
-}
-
-// 활동 로그 로드
-async function loadRecentLogs() {
-  if (!recentLogsTable) return;
-
-  try {
-    if (supabase && supabase.from) {
-      const { data: logs, error } = await supabase
-        .from('logs')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(5);
-
-      if (!error && logs && logs.length > 0) {
-        recentLogsTable.innerHTML = logs.map(log => `
-          <tr class="border-b border-zinc-800 hover:bg-zinc-800/50 transition">
-            <td class="py-3 px-4 text-xs text-zinc-400">${new Date(log.created_at).toLocaleString('ko-KR')}</td>
-            <td class="py-3 px-4 text-xs font-semibold text-white">${log.admin_name || '최고관리자'}</td>
-            <td class="py-3 px-4 text-xs text-zinc-300">${log.action || '시스템 작업'}</td>
-          </tr>
-        `).join('');
+function initCharts() {
+  const trafficCtx = document.getElementById('trafficChart')?.getContext('2d');
+  if (trafficCtx) {
+    new Chart(trafficCtx, {
+      type: 'line',
+      data: {
+        labels: ['월', '화', '수', '목', '금', '토', '일'],
+        datasets: [{
+          label: '동시 시청자 수 (k)',
+          data: [28, 32, 30, 38, 45, 58, 52],
+          borderColor: '#dc2626',
+          backgroundColor: 'rgba(220, 38, 38, 0.1)',
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#a1a1aa' } },
+          y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#a1a1aa' } }
+        }
       }
-    }
-  } catch (err) {
-    console.log('기본 로그 목록 유지');
+    });
+  }
+
+  const deviceCtx = document.getElementById('deviceChart')?.getContext('2d');
+  if (deviceCtx) {
+    new Chart(deviceCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['스마트 TV', '모바일 앱', 'PC 웹', '태블릿'],
+        datasets: [{
+          data: [45, 30, 15, 10],
+          backgroundColor: ['#dc2626', '#f59e0b', '#3b82f6', '#10b981'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { color: '#a1a1aa', font: { size: 11 } } }
+        }
+      }
+    });
   }
 }
