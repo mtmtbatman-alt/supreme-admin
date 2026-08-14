@@ -1,124 +1,56 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>대시보드 홈 - SUPREME ADMIN</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="css/style.css">
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>슈프림 어드민 대시보드</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-zinc-950 text-white min-h-screen flex selection:bg-red-600 selection:text-white">
+<body class="bg-[#0b0b0b] text-white min-h-screen flex m-0">
 
-  <!-- 사이드바 -->
-  <aside class="w-64 bg-zinc-900 border-r border-zinc-800 flex flex-col justify-between min-h-screen p-4 shrink-0">
-    <div>
-      <div class="px-4 py-3 mb-6 flex items-center gap-2">
-        <div class="w-3 h-3 rounded-full bg-red-600 animate-pulse"></div>
-        <h1 class="text-xl font-black text-red-600 tracking-wider">SUPREME ADMIN</h1>
-      </div>
-      <nav class="space-y-1">
-        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-white bg-red-600 rounded-xl shadow-lg shadow-red-600/20 transition">
-          <i data-lucide="layout-dashboard" class="w-4 h-4"></i> 대시보드 홈
-        </a>
-        <a href="content.html" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800/80 rounded-xl transition">
-          <i data-lucide="film" class="w-4 h-4"></i> 콘텐츠 관리
-        </a>
-        <a href="banners.html" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800/80 rounded-xl transition">
-          <i data-lucide="image" class="w-4 h-4"></i> 배너 관리
-        </a>
-        <a href="notice.html" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800/80 rounded-xl transition">
-          <i data-lucide="bell" class="w-4 h-4"></i> 공지사항
-        </a>
-        <a href="settings.html" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800/80 rounded-xl transition">
-          <i data-lucide="settings" class="w-4 h-4"></i> 설정
-        </a>
-        <a href="backup.html" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800/80 rounded-xl transition">
-          <i data-lucide="database" class="w-4 h-4"></i> 시스템 백업
-        </a>
-      </nav>
-    </div>
-    <div class="pt-4 border-t border-zinc-800">
-      <button onclick="location.href='login.html'" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-zinc-400 hover:text-red-500 hover:bg-zinc-800/80 rounded-xl transition">
-        <i data-lucide="log-out" class="w-4 h-4"></i> 로그아웃
-      </button>
-    </div>
-  </aside>
-
-  <!-- 메인 대시보드 -->
-  <main class="flex-1 p-8 overflow-y-auto max-w-[1600px] mx-auto w-full">
-    <header class="flex justify-between items-center mb-8">
-      <div>
-        <h2 class="text-2xl font-black text-white tracking-tight">스트리밍 메트릭 관제 홈</h2>
-        <p class="text-xs text-zinc-400 mt-1">실시간 동시 접속자 수, 트래픽 과부하 현황 및 매출 지표를 실시간 분석합니다.</p>
-      </div>
-      <div class="flex items-center gap-2 bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-xl text-xs font-bold text-emerald-400">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> 시스템 정상 가동 중 (99.98%)
-      </div>
-    </header>
-
-    <!-- KPI 메트릭 카드 4종 -->
-    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-      <div class="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
-        <div class="flex justify-between items-center text-zinc-400 mb-2">
-          <span class="text-xs font-semibold">실시간 동시 접속자 (DAU)</span>
-          <i data-lucide="users" class="w-4 h-4 text-red-500"></i>
+    <!-- 사이드바 -->
+    <aside class="w-64 bg-[#141416] border-r border-[#222226] p-6 flex flex-col justify-between">
+        <div>
+            <h1 class="text-red-600 font-bold text-lg mb-10 tracking-wider">● SUPREME ADMIN</h1>
+            <nav class="space-y-4 text-sm text-gray-400">
+                <a href="dashboard.html" class="block text-white font-medium">대시보드</a>
+                <a href="#" class="block hover:text-white transition-colors">사용자 관리</a>
+                <a href="#" class="block hover:text-white transition-colors">통계 분석</a>
+            </nav>
         </div>
-        <h3 class="text-2xl font-black text-white">42,890명</h3>
-        <span class="text-[11px] text-emerald-400 font-bold mt-2 inline-block">▲ 지난주 대비 +12.4%</span>
-      </div>
-
-      <div class="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
-        <div class="flex justify-between items-center text-zinc-400 mb-2">
-          <span class="text-xs font-semibold">이번 달 스트리밍 매출</span>
-          <i data-lucide="dollar-sign" class="w-4 h-4 text-emerald-400"></i>
+        <div>
+            <button id="logoutBtn" class="w-full text-left text-sm text-red-500 hover:text-red-400 transition-colors">
+                로그아웃
+            </button>
         </div>
-        <h3 class="text-2xl font-black text-white">₩184,250,000</h3>
-        <span class="text-[11px] text-emerald-400 font-bold mt-2 inline-block">▲ 목표 대비 108% 달성</span>
-      </div>
+    </aside>
 
-      <div class="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
-        <div class="flex justify-between items-center text-zinc-400 mb-2">
-          <span class="text-xs font-semibold">CDN 대역폭 사용량</span>
-          <i data-lucide="activity" class="w-4 h-4 text-blue-400"></i>
-        </div>
-        <h3 class="text-2xl font-black text-white">1.24 Tbps</h3>
-        <span class="text-[11px] text-blue-400 font-bold mt-2 inline-block">● 피크 시간대 (안정)</span>
-      </div>
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="flex-1 p-10 overflow-y-auto">
+        <header class="mb-8">
+            <h2 class="text-2xl font-bold" id="welcomeMsg">대시보드에 오신 것을 환영합니다.</h2>
+            <p class="text-xs text-gray-500 mt-1">시스템 상태 및 관리자 세션 정보</p>
+        </header>
 
-      <div class="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
-        <div class="flex justify-between items-center text-zinc-400 mb-2">
-          <span class="text-xs font-semibold">평균 시청 지속 시간</span>
-          <i data-lucide="clock" class="w-4 h-4 text-amber-400"></i>
-        </div>
-        <h3 class="text-2xl font-black text-white">124분 / 유저</h3>
-        <span class="text-[11px] text-amber-400 font-bold mt-2 inline-block">▲ 몰입도 우수</span>
-      </div>
-    </section>
+        <!-- 통계 카드 그리드 -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-[#141416] p-6 rounded-xl border border-[#222226]">
+                <p class="text-gray-400 text-xs mb-1">접속 계정 이메일</p>
+                <p class="text-lg font-bold text-white truncate" id="userEmail">로딩중...</p>
+            </div>
+            <div class="bg-[#141416] p-6 rounded-xl border border-[#222226]">
+                <p class="text-gray-400 text-xs mb-1">권한 등급</p>
+                <p class="text-lg font-bold text-red-500" id="userRole">SUPER_ADMIN</p>
+            </div>
+            <div class="bg-[#141416] p-6 rounded-xl border border-[#222226]">
+                <p class="text-gray-400 text-xs mb-1">시스템 상태</p>
+                <p class="text-lg font-bold text-green-500">안정 (Online)</p>
+            </div>
+        </section>
+    </main>
 
-    <!-- 차트 그리드 -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div class="lg:col-span-2 bg-zinc-900 border border-zinc-800 p-6 rounded-2xl">
-        <h4 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
-          <i data-lucide="trending-up" class="w-4 h-4 text-red-500"></i> 최근 7일간 스트리밍 시청 트래픽 추이
-        </h4>
-        <div class="h-72">
-          <canvas id="trafficChart"></canvas>
-        </div>
-      </div>
-
-      <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl">
-        <h4 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
-          <i data-lucide="pie-chart" class="w-4 h-4 text-red-500"></i> 콘텐츠 디바이스 점유율
-        </h4>
-        <div class="h-72 flex items-center justify-center">
-          <canvas id="deviceChart"></canvas>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <script type="module" src="js/dashboard.js"></script>
+    <!-- 대시보드 스크립트 연결 -->
+    <script src="js/dashboard.js"></script>
 </body>
 </html>
