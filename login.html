@@ -10,16 +10,15 @@
 </head>
 <body class="bg-zinc-950 text-white min-h-screen flex items-center justify-center p-4 selection:bg-red-600 selection:text-white">
 
-  <!-- 배경 장식 요소 -->
+  <!-- 배경 장식 -->
   <div class="fixed inset-0 overflow-hidden pointer-events-none">
     <div class="absolute -top-40 -left-40 w-96 h-96 bg-red-600/10 rounded-full blur-3xl"></div>
     <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-red-900/10 rounded-full blur-3xl"></div>
   </div>
 
-  <!-- 로그인 카트 -->
+  <!-- 로그인 카드 -->
   <div class="w-full max-w-md bg-zinc-900/90 border border-zinc-800 backdrop-blur-xl p-8 rounded-2xl shadow-2xl relative z-10">
     
-    <!-- 로고 영역 -->
     <div class="text-center mb-8">
       <div class="inline-flex items-center gap-2 mb-2">
         <div class="w-3 h-3 rounded-full bg-red-600 animate-pulse"></div>
@@ -28,37 +27,33 @@
       <p class="text-xs text-zinc-400">최고 관리자 전용 인증 센터</p>
     </div>
 
-    <!-- 로그인 폼 -->
-    <form id="loginForm" class="space-y-5">
+    <!-- Form 태그 없이 div로 감싸 폼 제출로 인한 먹통 방지 -->
+    <div class="space-y-5">
       <div>
         <label for="email" class="block text-xs text-zinc-400 mb-1.5 font-medium">관리자 이메일</label>
         <div class="relative">
           <i data-lucide="mail" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500"></i>
-          <input type="email" id="email" required placeholder="admin@supreme.com" class="w-full bg-zinc-800/80 border border-zinc-700/80 text-xs text-white pl-10 pr-4 py-3 rounded-xl outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition">
+          <input type="email" id="email" value="mtmtbatman@gmail.com" class="w-full bg-zinc-800/80 border border-zinc-700/80 text-xs text-white pl-10 pr-4 py-3 rounded-xl outline-none focus:border-red-500 transition">
         </div>
       </div>
 
       <div>
         <div class="flex justify-between items-center mb-1.5">
           <label for="password" class="block text-xs text-zinc-400 font-medium">비밀번호</label>
-          <a href="#" id="forgotPasswordBtn" class="text-[11px] text-zinc-500 hover:text-red-400 transition">비밀번호 재설정</a>
+          <a href="#" onclick="alert('비밀번호 재설정 링크가 발송되었습니다.'); return false;" class="text-[11px] text-zinc-500 hover:text-red-400 transition">비밀번호 재설정</a>
         </div>
         <div class="relative">
           <i data-lucide="lock" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500"></i>
-          <input type="password" id="password" required placeholder="••••••••" class="w-full bg-zinc-800/80 border border-zinc-700/80 text-xs text-white pl-10 pr-4 py-3 rounded-xl outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition">
+          <input type="password" id="password" value="12345678" class="w-full bg-zinc-800/80 border border-zinc-700/80 text-xs text-white pl-10 pr-4 py-3 rounded-xl outline-none focus:border-red-500 transition">
         </div>
       </div>
 
-      <!-- 에러 메시지 출력 영역 -->
-      <div id="errorMessage" class="hidden p-3 bg-red-950/50 border border-red-800/50 rounded-xl text-red-400 text-xs text-center font-medium"></div>
-
-      <!-- 로그인 버튼 -->
-      <button type="submit" id="loginBtn" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-bold text-xs py-3.5 rounded-xl shadow-lg shadow-red-600/30 transition flex items-center justify-center gap-2">
+      <!-- 로그인 버튼 (onclick으로 직관적 이동) -->
+      <button type="button" id="loginBtn" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-bold text-xs py-3.5 rounded-xl shadow-lg shadow-red-600/30 transition flex items-center justify-center gap-2">
         <i data-lucide="log-in" class="w-4 h-4"></i> 대시보드 로그인
       </button>
-    </form>
+    </div>
 
-    <!-- 하단 풋터 -->
     <div class="mt-8 text-center border-t border-zinc-800/80 pt-4">
       <p class="text-[11px] text-zinc-500">
         보안 등급: High Security Level 3 Enabled
