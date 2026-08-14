@@ -6,51 +6,72 @@
     <title>슈프림 어드민 대시보드</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-[#0b0b0b] text-white min-h-screen flex m-0">
 
     <!-- 사이드바 -->
     <aside class="w-64 bg-[#141416] border-r border-[#222226] p-6 flex flex-col justify-between">
         <div>
-            <h1 class="text-red-600 font-bold text-lg mb-10 tracking-wider">● SUPREME ADMIN</h1>
+            <h1 class="text-red-600 font-bold text-lg mb-10 tracking-wider flex items-center gap-2">
+                <i data-lucide="shield-alert" class="w-5 h-5"></i> SUPREME ADMIN
+            </h1>
             <nav class="space-y-4 text-sm text-gray-400">
-                <a href="dashboard.html" class="block text-white font-medium">대시보드</a>
-                <a href="#" class="block hover:text-white transition-colors">사용자 관리</a>
-                <a href="#" class="block hover:text-white transition-colors">통계 분석</a>
+                <a href="dashboard.html" class="flex items-center gap-3 text-white font-medium bg-[#1e1e24] p-3 rounded-lg">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i> 대시보드
+                </a>
+                <a href="#" class="flex items-center gap-3 hover:text-white p-3 rounded-lg hover:bg-[#1e1e24] transition-colors">
+                    <i data-lucide="users" class="w-4 h-4"></i> 사용자 관리
+                </a>
+                <a href="#" class="flex items-center gap-3 hover:text-white p-3 rounded-lg hover:bg-[#1e1e24] transition-colors">
+                    <i data-lucide="bar-chart-3" class="w-4 h-4"></i> 통계 분석
+                </a>
             </nav>
         </div>
         <div>
-            <button id="logoutBtn" class="w-full text-left text-sm text-red-500 hover:text-red-400 transition-colors">
-                로그아웃
+            <button id="logoutBtn" class="w-full flex items-center gap-3 text-sm text-red-500 hover:text-red-400 p-3 rounded-lg hover:bg-red-500/10 transition-colors">
+                <i data-lucide="log-out" class="w-4 h-4"></i> 로그아웃
             </button>
         </div>
     </aside>
 
     <!-- 메인 컨텐츠 영역 -->
     <main class="flex-1 p-10 overflow-y-auto">
-        <header class="mb-8">
-            <h2 class="text-2xl font-bold" id="welcomeMsg">대시보드에 오신 것을 환영합니다.</h2>
-            <p class="text-xs text-gray-500 mt-1">시스템 상태 및 관리자 세션 정보</p>
+        <header class="mb-8 flex justify-between items-center">
+            <div>
+                <h2 class="text-2xl font-bold" id="welcomeMsg">대시보드에 오신 것을 환영합니다.</h2>
+                <p class="text-xs text-gray-500 mt-1">실시간 시스템 트래픽 및 접속 현황</p>
+            </div>
+            <div class="bg-[#141416] border border-[#222226] px-4 py-2 rounded-lg text-xs text-gray-400 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span id="userEmail">연결 확인 중...</span>
+            </div>
         </header>
 
-        <!-- 통계 카드 그리드 -->
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-[#141416] p-6 rounded-xl border border-[#222226]">
-                <p class="text-gray-400 text-xs mb-1">접속 계정 이메일</p>
-                <p class="text-lg font-bold text-white truncate" id="userEmail">로딩중...</p>
+        <!-- 통계 차트 영역 -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- 트래픽 선 그래프 (2칸 차지) -->
+            <div class="lg:col-span-2 bg-[#141416] p-6 rounded-xl border border-[#222226]">
+                <h3 class="text-sm font-semibold text-gray-300 mb-4">주간 동시 시청자 트래픽</h3>
+                <div class="h-64">
+                    <canvas id="trafficChart"></canvas>
+                </div>
             </div>
+
+            <!-- 기기별 접속 비율 도넛 그래프 (1칸 차지) -->
             <div class="bg-[#141416] p-6 rounded-xl border border-[#222226]">
-                <p class="text-gray-400 text-xs mb-1">권한 등급</p>
-                <p class="text-lg font-bold text-red-500" id="userRole">SUPER_ADMIN</p>
-            </div>
-            <div class="bg-[#141416] p-6 rounded-xl border border-[#222226]">
-                <p class="text-gray-400 text-xs mb-1">시스템 상태</p>
-                <p class="text-lg font-bold text-green-500">안정 (Online)</p>
+                <h3 class="text-sm font-semibold text-gray-300 mb-4">기기별 접속 비율</h3>
+                <div class="h-64">
+                    <canvas id="deviceChart"></canvas>
+                </div>
             </div>
         </section>
     </main>
 
-    <!-- 대시보드 스크립트 연결 -->
+    <!-- 통합 대시보드 스크립트 연결 -->
     <script src="js/dashboard.js"></script>
 </body>
 </html>
