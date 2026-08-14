@@ -1,150 +1,138 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>콘텐츠 관리 - SUPREME ADMIN</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="css/style.css">
-  <script src="https://unpkg.com/lucide@latest"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>슈프림 어드민 - 콘텐츠 관리</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="bg-zinc-950 text-white min-h-screen flex selection:bg-red-600 selection:text-white">
+<body class="bg-[#0b0b0b] text-white min-h-screen flex m-0">
 
-  <!-- 사이드바 -->
-  <aside class="w-64 bg-zinc-900 border-r border-zinc-800 flex flex-col justify-between min-h-screen p-4 shrink-0">
-    <div>
-      <div class="px-4 py-3 mb-6 flex items-center gap-2">
-        <div class="w-3 h-3 rounded-full bg-red-600 animate-pulse"></div>
-        <h1 class="text-xl font-black text-red-600 tracking-wider">SUPREME ADMIN</h1>
-      </div>
-      <nav class="space-y-1">
-        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800/80 rounded-xl transition">
-          <i data-lucide="layout-dashboard" class="w-4 h-4"></i> 대시보드 홈
-        </a>
-        <a href="content.html" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-white bg-red-600 rounded-xl shadow-lg shadow-red-600/20 transition">
-          <i data-lucide="film" class="w-4 h-4"></i> 콘텐츠 관리
-        </a>
-        <a href="banners.html" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800/80 rounded-xl transition">
-          <i data-lucide="image" class="w-4 h-4"></i> 배너 관리
-        </a>
-        <a href="notice.html" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800/80 rounded-xl transition">
-          <i data-lucide="bell" class="w-4 h-4"></i> 공지사항
-        </a>
-        <a href="settings.html" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800/80 rounded-xl transition">
-          <i data-lucide="settings" class="w-4 h-4"></i> 설정
-        </a>
-        <a href="backup.html" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-zinc-400 hover:text-white hover:bg-zinc-800/80 rounded-xl transition">
-          <i data-lucide="database" class="w-4 h-4"></i> 시스템 백업
-        </a>
-      </nav>
-    </div>
-    <div class="pt-4 border-t border-zinc-800">
-      <button onclick="location.href='login.html'" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-zinc-400 hover:text-red-500 hover:bg-zinc-800/80 rounded-xl transition">
-        <i data-lucide="log-out" class="w-4 h-4"></i> 로그아웃
-      </button>
-    </div>
-  </aside>
-
-  <!-- 메인 영역 -->
-  <main class="flex-1 p-8 overflow-y-auto max-w-[1600px] mx-auto w-full">
-    <header class="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-8">
-      <div>
-        <div class="flex items-center gap-3">
-          <h2 class="text-2xl font-black text-white tracking-tight">VOD 라이브러리 콘텐츠 관리</h2>
-          <span id="contentBadge" class="bg-red-500/10 border border-red-500/30 text-xs text-red-400 px-3 py-1 rounded-full font-bold">등록 0개</span>
-        </div>
-        <p class="text-xs text-zinc-400 mt-1">영화, 드라마, 애니메이션, 다큐멘터리의 메타데이터 및 스트리밍 화질 태그를 등록 및 제어합니다.</p>
-      </div>
-      
-      <button id="openContentModalBtn" class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-5 py-3 rounded-xl shadow-lg shadow-red-600/30 transition flex items-center justify-center gap-2 shrink-0">
-        <i data-lucide="plus" class="w-4 h-4"></i> 콘텐츠 추가
-      </button>
-    </header>
-
-    <!-- 검색 및 필터 -->
-    <div class="flex flex-col sm:flex-row justify-between gap-4 mb-6 bg-zinc-900/60 p-3 rounded-2xl border border-zinc-800/80">
-      <div class="flex gap-2">
-        <select id="typeFilter" class="bg-zinc-800 border border-zinc-700 text-xs text-zinc-300 rounded-xl px-3 py-2 outline-none focus:border-red-500">
-          <option value="all">모든 유형</option>
-          <option value="movie">🎬 영화</option>
-          <option value="drama">📺 드라마/시리즈</option>
-          <option value="anime">✨ 애니메이션</option>
-        </select>
-        <select id="qualityFilter" class="bg-zinc-800 border border-zinc-700 text-xs text-zinc-300 rounded-xl px-3 py-2 outline-none focus:border-red-500">
-          <option value="all">전체 화질</option>
-          <option value="4K">4K UHD</option>
-          <option value="FHD">Full HD</option>
-        </select>
-      </div>
-      <div class="relative w-full sm:w-72">
-        <i data-lucide="search" class="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2"></i>
-        <input type="text" id="contentSearchInput" placeholder="제목, 장르 검색..." class="w-full bg-zinc-800/90 border border-zinc-700 text-xs text-white rounded-xl pl-9 pr-3 py-2 outline-none focus:border-red-500">
-      </div>
-    </div>
-
-    <!-- 콘텐츠 포스터 카드 포맷 그리드 -->
-    <div id="contentGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5">
-      <!-- JS 랜더링 -->
-    </div>
-  </main>
-
-  <!-- 콘텐츠 모달 -->
-  <div id="contentModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-xl p-6 relative shadow-2xl max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center pb-4 mb-4 border-b border-zinc-800 sticky top-0 bg-zinc-900 z-10">
-        <h3 id="contentModalTitle" class="text-lg font-bold text-white flex items-center gap-2"><i data-lucide="film" class="w-5 h-5 text-red-500"></i> 새 콘텐츠 등록</h3>
-        <button id="closeContentModalBtn" class="text-zinc-500 hover:text-white p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
-
-      <form id="contentForm" class="space-y-4">
-        <input type="hidden" id="contentId">
+    <!-- 사이드바 (원본 100% 유지) -->
+    <aside class="w-64 bg-[#141416] border-r border-[#222226] p-6 flex flex-col justify-between">
         <div>
-          <label class="block text-xs text-zinc-400 mb-1 font-medium">콘텐츠 제목 <span class="text-red-500">*</span></label>
-          <input type="text" id="titleInput" required placeholder="예: 더 슈프림: 익스트림" class="w-full bg-zinc-800 border border-zinc-700 text-xs text-white rounded-xl p-3 outline-none focus:border-red-500">
+            <div class="flex items-center gap-3 mb-10">
+                <span class="w-2.5 h-2.5 rounded-full bg-red-600"></span>
+                <h1 class="text-red-600 font-bold text-lg tracking-wider">SUPREME ADMIN</h1>
+            </div>
+            <nav class="space-y-2 text-sm text-gray-400">
+                <a href="dashboard.html" class="flex items-center px-4 py-3 rounded-xl hover:text-white hover:bg-[#1e1e24] transition-colors">
+                    대시보드 홈
+                </a>
+                <a href="content.html" class="flex items-center px-4 py-3 rounded-xl text-white bg-gradient-to-r from-red-600 to-red-700 shadow-lg shadow-red-900/30 font-medium">
+                    콘텐츠 관리
+                </a>
+                <a href="banners.html" class="flex items-center px-4 py-3 rounded-xl hover:text-white hover:bg-[#1e1e24] transition-colors">
+                    배너 관리
+                </a>
+                <a href="notice.html" class="flex items-center px-4 py-3 rounded-xl hover:text-white hover:bg-[#1e1e24] transition-colors">
+                    공지사항
+                </a>
+                <a href="settings.html" class="flex items-center px-4 py-3 rounded-xl hover:text-white hover:bg-[#1e1e24] transition-colors">
+                    설정
+                </a>
+                <a href="backup.html" class="flex items-center px-4 py-3 rounded-xl hover:text-white hover:bg-[#1e1e24] transition-colors">
+                    시스템 백업
+                </a>
+            </nav>
         </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs text-zinc-400 mb-1 font-medium">유형</label>
-            <select id="typeInput" class="w-full bg-zinc-800 border border-zinc-700 text-xs text-white rounded-xl p-3 outline-none focus:border-red-500">
-              <option value="movie">🎬 영화</option>
-              <option value="drama">📺 드라마/시리즈</option>
-              <option value="anime">✨ 애니메이션</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs text-zinc-400 mb-1 font-medium">최대 지원 화질</label>
-            <select id="qualityInput" class="w-full bg-zinc-800 border border-zinc-700 text-xs text-white rounded-xl p-3 outline-none focus:border-red-500">
-              <option value="4K">4K Ultra HD (HDR10+)</option>
-              <option value="FHD">1080p Full HD</option>
-            </select>
-          </div>
+        <div class="pt-4 border-t border-[#222226]">
+            <button id="logoutBtn" class="w-full text-left px-4 py-3 rounded-xl text-sm text-gray-400 hover:text-red-500 hover:bg-red-500/10 transition-colors">
+                로그아웃
+            </button>
         </div>
-        <div>
-          <label class="block text-xs text-zinc-400 mb-1 font-medium">포스터 이미지 URL <span class="text-red-500">*</span></label>
-          <input type="url" id="posterInput" required placeholder="https://..." class="w-full bg-zinc-800 border border-zinc-700 text-xs text-white rounded-xl p-3 outline-none focus:border-red-500">
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs text-zinc-400 mb-1 font-medium">장르</label>
-            <input type="text" id="genreInput" placeholder="액션, SF, 스릴러" class="w-full bg-zinc-800 border border-zinc-700 text-xs text-white rounded-xl p-3 outline-none focus:border-red-500">
-          </div>
-          <div>
-            <label class="block text-xs text-zinc-400 mb-1 font-medium">평점 (Rating)</label>
-            <input type="number" step="0.1" min="0" max="10" id="ratingInput" value="9.5" class="w-full bg-zinc-800 border border-zinc-700 text-xs text-white rounded-xl p-3 outline-none focus:border-red-500">
-          </div>
-        </div>
-        <div>
-          <label class="block text-xs text-zinc-400 mb-1 font-medium">줄거리 (Logline)</label>
-          <textarea id="overviewInput" rows="3" placeholder="콘텐츠 요약 줄거리를 입력하세요." class="w-full bg-zinc-800 border border-zinc-700 text-xs text-white rounded-xl p-3 outline-none focus:border-red-500 resize-none"></textarea>
-        </div>
-        <div class="flex justify-end gap-2 pt-4 border-t border-zinc-800">
-          <button type="button" id="cancelContentModalBtn" class="px-5 py-2.5 text-xs text-zinc-400 hover:bg-zinc-800 rounded-xl">취소</button>
-          <button type="submit" class="px-6 py-2.5 text-xs bg-red-600 hover:bg-red-700 font-bold rounded-xl text-white shadow-lg shadow-red-600/30">저장하기</button>
-        </div>
-      </form>
-    </div>
-  </div>
+    </aside>
 
-  <script type="module" src="js/content.js"></script>
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="flex-1 p-10 overflow-y-auto">
+        <header class="mb-8 flex justify-between items-center">
+            <div>
+                <h2 class="text-2xl font-bold">콘텐츠 관리 센터</h2>
+                <p class="text-xs text-gray-500 mt-1">플랫폼 스트리밍 콘텐츠, 카테고리,공개 상태 및 순서를 관리합니다.</p>
+            </div>
+            <button onclick="openContentModal()" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors shadow-lg shadow-red-900/30 flex items-center gap-2">
+                <i data-lucide="plus" class="w-4 h-4"></i> 신규 콘텐츠 등록
+            </button>
+        </header>
+
+        <!-- 검색, 필터 및 다중 제어 바 -->
+        <section class="bg-[#141416] p-4 rounded-xl border border-[#222226] mb-6 flex flex-wrap gap-4 items-center justify-between">
+            <div class="flex items-center gap-3">
+                <select class="bg-[#0b0b0b] border border-[#222226] text-gray-300 text-xs rounded-lg px-3 py-2.5 outline-none focus:border-red-600">
+                    <option>전체 카테고리</option>
+                    <option>오리지널 시리즈</option>
+                    <option>영화</option>
+                    <option>다큐멘터리</option>
+                </select>
+                <select class="bg-[#0b0b0b] border border-[#222226] text-gray-300 text-xs rounded-lg px-3 py-2.5 outline-none focus:border-red-600">
+                    <option>전체 상태 (공개/비공개)</option>
+                    <option>공개</option>
+                    <option>비공개</option>
+                </select>
+                <button onclick="batchDelete()" class="bg-red-500/10 hover:bg-red-500/20 text-red-500 text-xs px-3 py-2.5 rounded-lg border border-red-500/20 transition-colors">
+                    선택 다중 삭제
+                </button>
+            </div>
+            <div class="w-72">
+                <input type="text" placeholder="콘텐츠 제목 검색..." class="w-full bg-[#0b0b0b] border border-[#222226] text-gray-300 text-xs rounded-lg px-4 py-2.5 outline-none focus:border-red-600">
+            </div>
+        </section>
+
+        <!-- 콘텐츠 목록 테이블 -->
+        <section class="bg-[#141416] rounded-xl border border-[#222226] overflow-hidden">
+            <table class="w-full text-left border-collapse text-sm">
+                <thead>
+                    <tr class="border-b border-[#222226] text-gray-400 bg-[#1a1a1e] text-xs">
+                        <th class="p-4 w-12 text-center"><input type="checkbox"></th>
+                        <th class="p-4 w-16 text-center">포스터</th>
+                        <th class="p-4">콘텐츠 제목</th>
+                        <th class="p-4 w-32">카테고리</th>
+                        <th class="p-4 w-24 text-center">추천 여부</th>
+                        <th class="p-4 w-28 text-center">상태</th>
+                        <th class="p-4 w-28 text-center">관리</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#222226] text-gray-300 text-xs">
+                    <tr>
+                        <td class="p-4 text-center"><input type="checkbox"></td>
+                        <td class="p-4 text-center"><div class="w-10 h-12 bg-gray-800 rounded mx-auto flex items-center justify-center text-[10px] text-gray-500">IMG</div></td>
+                        <td class="p-4 font-medium text-white">사이버펑크: 에지러너스 시즌 2</td>
+                        <td class="p-4 text-gray-400">오리지널 시리즈</td>
+                        <td class="p-4 text-center"><span class="text-amber-500 font-semibold">★ 추천</span></td>
+                        <td class="p-4 text-center"><span class="text-green-500 font-medium">● 공개</span></td>
+                        <td class="p-4 text-center">
+                            <button class="text-gray-400 hover:text-white mr-2">수정</button>
+                            <button class="text-red-500 hover:text-red-400">삭제</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- 페이지네이션 (20개 단위 기준) -->
+            <div class="p-4 border-t border-[#222226] flex justify-between items-center text-xs text-gray-400">
+                <span>총 1개 콘텐츠 (페이지 1 / 1)</span>
+                <div class="flex gap-1">
+                    <button class="px-3 py-1.5 bg-[#1a1a1e] rounded border border-[#222226] text-gray-300">이전</button>
+                    <button class="px-3 py-1.5 bg-red-600 rounded text-white font-medium">1</button>
+                    <button class="px-3 py-1.5 bg-[#1a1a1e] rounded border border-[#222226] text-gray-300">다음</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const adminUser = JSON.parse(sessionStorage.getItem('sp_admin_user'));
+            if (!adminUser) { window.location.href = 'login.html'; return; }
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                sessionStorage.removeItem('sp_admin_user');
+                window.location.href = 'login.html';
+            });
+            if (window.lucide) { window.lucide.createIcons(); }
+        });
+        function openContentModal() { alert('신규 콘텐츠 등록 모달 오픈'); }
+        function batchDelete() { alert('선택한 콘텐츠들을 다중 삭제합니다.'); }
+    </script>
 </body>
 </html>

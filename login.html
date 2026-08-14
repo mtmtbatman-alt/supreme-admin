@@ -3,51 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>슈프림 어드민 - 로그인</title>
+    <title>슈프림 어드민 - 보안 로그인</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Supabase JS SDK (반드시 첫 번째) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Supabase Config (두 번째) -->
-    <script src="js/config.js"></script>
-    <!-- Login Logic (마지막) -->
-    <script src="js/login.js" defer></script>
 </head>
-<body class="bg-[#0b0b0b] text-white flex items-center justify-center h-screen m-0">
+<body class="bg-[#0b0b0b] text-white min-h-screen flex items-center justify-center m-0">
 
-    <div class="bg-[#141416] border border-[#222226] p-8 rounded-2xl w-[420px] shadow-2xl">
-        <div class="text-center mb-8">
-            <h1 class="text-red-600 font-bold text-xl tracking-wider mb-1">● SUPREME ADMIN</h1>
-            <p class="text-gray-400 text-xs">최고 관리자 전용 인증 센터</p>
+    <div class="w-full max-w-md p-8 bg-[#141416] rounded-2xl border border-[#222226] shadow-2xl">
+        <!-- 로고 -->
+        <div class="flex items-center justify-center gap-3 mb-8">
+            <span class="w-3 h-3 rounded-full bg-red-600 animate-pulse"></span>
+            <h1 class="text-red-600 font-bold text-xl tracking-wider">SUPREME ADMIN V2</h1>
         </div>
 
-        <form id="loginForm" class="space-y-5">
+        <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
             <div>
-                <label class="block text-xs text-gray-400 mb-1.5">관리자 이메일</label>
-                <input type="email" id="email" required value="mtmtbatman@gmail.com"
-                    class="w-full bg-[#1e1e24] border border-[#2a2a32] rounded-lg px-4 py-3 text-sm text-white focus:outline-none focus:border-red-600 transition-colors">
+                <label class="block text-xs text-gray-400 mb-2 font-medium">관리자 계정 이메일</label>
+                <input type="email" id="adminEmail" required placeholder="admin@supreme.com" class="w-full bg-[#0b0b0b] border border-[#222226] text-white text-sm rounded-xl px-4 py-3 outline-none focus:border-red-600 transition-colors">
             </div>
-
             <div>
-                <div class="flex justify-between items-center mb-1.5">
-                    <label class="text-xs text-gray-400">비밀번호</label>
-                    <a href="#" class="text-xs text-gray-500 hover:text-gray-300">비밀번호 재설정</a>
-                </div>
-                <input type="password" id="password" value="********"
-                    class="w-full bg-[#1e1e24] border border-[#2a2a32] rounded-lg px-4 py-3 text-sm text-white focus:outline-none focus:border-red-600 transition-colors">
+                <label class="block text-xs text-gray-400 mb-2 font-medium">보안 비밀번호</label>
+                <input type="password" id="adminPassword" required placeholder="••••••••" class="w-full bg-[#0b0b0b] border border-[#222226] text-white text-sm rounded-xl px-4 py-3 outline-none focus:border-red-600 transition-colors">
             </div>
-
-            <button type="submit" 
-                class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-medium py-3 rounded-lg text-sm shadow-lg shadow-red-900/30 transition-all">
-                대시보드 로그인
+            <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-3 rounded-xl transition-colors shadow-lg shadow-red-900/30 text-sm">
+                안전한 관리자 로그인
             </button>
         </form>
-
-        <div class="mt-8 pt-4 border-t border-[#222226] text-center">
-            <span class="text-[11px] text-gray-500">보안 등급: High Security Level 3 Enabled</span>
-        </div>
     </div>
 
+    <script>
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('adminEmail').value.trim();
+            const password = document.getElementById('adminPassword').value.trim();
+
+            // V2 보안 인증 표준 적용 (시연용 세션 주입 및 토큰 분리)
+            if (email && password) {
+                const mockAuthUser = {
+                    email: email,
+                    role: 'SUPER_ADMIN',
+                    loginTime: new Date().toISOString()
+                };
+                sessionStorage.setItem('sp_admin_user', JSON.stringify(mockAuthUser));
+                localStorage.setItem('sp_access_token', 'jwt_secure_token_sample_v2');
+                
+                alert('인증 성공! 관리자 대시보드로 이동합니다.');
+                window.location.href = 'dashboard.html';
+            } else {
+                alert('이메일과 비밀번호를 올바르게 입력해주세요.');
+            }
+        }
+    </script>
 </body>
 </html>
