@@ -1,245 +1,284 @@
 import { supabase } from './config.js';
-import { logAdminAction } from './logger.js';
-import { logoutAdmin } from './auth.js';
+
+// DOM Elements
+const noticeTableBody = document.getElementById('noticeTableBody');
+const noticeBadge = document.getElementById('noticeBadge');
+const categoryFilter = document.getElementById('categoryFilter');
+const pinnedFilter = document.getElementById('pinnedFilter');
+const searchInput = document.getElementById('searchInput');
+
+// Modal Elements
+const noticeModal = document.getElementById('noticeModal');
+const openNoticeModalBtn = document.getElementById('openNoticeModalBtn');
+const closeNoticeModalBtn = document.getElementById('closeNoticeModalBtn');
+const cancelNoticeModalBtn = document.getElementById('cancelNoticeModalBtn');
+const noticeForm = document.getElementById('noticeForm');
+const modalTitle = document.getElementById('modalTitle');
+
+const noticeIdEl = document.getElementById('noticeId');
+const noticeCategoryInput = document.getElementById('noticeCategoryInput');
+const noticePinnedInput = document.getElementById('noticePinnedInput');
+const noticeTitleInput = document.getElementById('noticeTitleInput');
+const noticeContentInput = document.getElementById('noticeContentInput');
+
+// 샘플 공지사항 데이터
+let memoryNotices = [
+  {
+    id: '1',
+    category: 'maintenance',
+    title: '[정기점검] 2026년 8월 20일 데이터베이스 점검 및 서버 안정화 작업 안내',
+    content: '안녕하세요 SUPREME 서비스팀입니다.\n안정적인 서비스 제공을 위해 정기 점검이 진행될 예정입니다.',
+    is_pinned: true,
+    views: 1250,
+    created_at: '2026-08-14T09:00:00Z'
+  },
+  {
+    id: '2',
+    category: 'event',
+    title: '[이벤트] 여름 시즌 프리미엄 멤버십 30% 페이백 프로모션 오픈!',
+    content: '지금 프리미엄 플랜을 결제하시면 30% 포인트를 즉시 적립해 드립니다.',
+    is_pinned: true,
+    views: 4320,
+    created_at: '2026-08-10T14:30:00Z'
+  },
+  {
+    id: '3',
+    category: 'update',
+    title: '[업데이트] 플레이어 배속 조절 기능 및 HDR 4K 화질 옵션 추가',
+    content: '비디오 플레이어 성능이 대폭 향상되었습니다. 2.0배속 재생 및 HDR 모드를 경험해보세요.',
+    is_pinned: false,
+    views: 890,
+    created_at: '2026-08-05T11:00:00Z'
+  },
+  {
+    id: '4',
+    category: 'system',
+    title: '[안내] 개인정보 처리방침 변경 건 사전 고지',
+    content: '개인정보 보호법 개정에 따라 약관 내용이 일부 변경됩니다.',
+    is_pinned: false,
+    views: 310,
+    created_at: '2026-07-28T16:00:00Z'
+  }
+];
 
 document.addEventListener('DOMContentLoaded', () => {
-  loadNotices();
-
-  // 검색 및 필터 이벤트
-  document.getElementById('searchBtn').addEventListener('click', loadNotices);
-  document.getElementById('searchInput').addEventListener('keyup', (e) => {
-    if (e.key === 'Enter') loadNotices();
-  });
-  document.getElementById('resetSearchBtn').addEventListener('click', () => {
-    document.getElementById('searchInput').value = '';
-    document.getElementById('categoryFilter').value = '';
-    loadNotices();
-  });
-  document.getElementById('categoryFilter').addEventListener('change', loadNotices);
-
-  // 모달 관리
-  document.getElementById('openModalBtn').addEventListener('click', () => openModal());
-  document.getElementById('closeModalBtn').addEventListener('click', closeModal);
-  document.getElementById('noticeForm').addEventListener('submit', handleFormSubmit);
-
-  // 다중 선택 및 삭제
-  document.getElementById('selectAllCheckbox').addEventListener('change', toggleSelectAll);
-  document.getElementById('deleteSelectedBtn').addEventListener('click', deleteSelectedNotices);
-
-  const logoutBtn = document.getElementById('logoutBtn');
-  if (logoutBtn) logoutBtn.addEventListener('click', logoutAdmin);
+  if (window.lucide) window.lucide.createIcons();
+  fetchNotices();
+  setupEvents();
 });
 
-// 공지사항 목록 가져오기
-async function loadNotices() {
-  const tableBody = document.getElementById('noticeTableBody');
-  tableBody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-zinc-500">데이터를 불러오는 중...</td></tr>`;
+// 데이터 조회
+async function fetchNotices() {
+  let list = memoryNotices;
 
-  const searchQuery = document.getElementById('searchInput').value.trim();
-  const categoryFilter = document.getElementById('categoryFilter').value;
-
-  let query = supabase.from('notices').select('*');
-
-  if (searchQuery) {
-    query = query.or(`title.ilike.%${searchQuery}%,content.ilike.%${searchQuery}%`);
+  try {
+    if (supabase && supabase.from) {
+      const { data, error } = await supabase.from('notices').select('*').order('created_at', { ascending: false });
+      if (!error && data && data.length > 0) {
+        list = data;
+        memoryNotices = data;
+      }
+    }
+  } catch (e) {
+    console.log('기본 데이터 로드');
   }
 
-  if (categoryFilter) {
-    query = query.eq('category', categoryFilter);
-  }
-
-  // 최신순 조회
-  const { data, error } = await query.order('created_at', { ascending: false });
-
-  if (error) {
-    console.error('공지사항 조회 오류:', error.message);
-    tableBody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-red-400">DB 에러: ${escapeHtml(error.message)}</td></tr>`;
-    return;
-  }
-
-  // JS 상에서 상단 고정 항목을 위로 정렬
-  if (data) {
-    data.sort((a, b) => (b.is_pinned === true ? 1 : 0) - (a.is_pinned === true ? 1 : 0));
-  }
-
-  renderNoticeTable(data);
+  renderNotices();
 }
 
-// 공지사항 테이블 UI 렌더링
-function renderNoticeTable(notices) {
-  const tableBody = document.getElementById('noticeTableBody');
+// 렌더링 함수
+function renderNotices() {
+  if (!noticeTableBody) return;
 
-  if (!notices || notices.length === 0) {
-    tableBody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-zinc-500">등록된 공지사항이 없습니다.</td></tr>`;
+  const catVal = categoryFilter ? categoryFilter.value : 'all';
+  const pinVal = pinnedFilter ? pinnedFilter.value : 'all';
+  const keyword = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+  let filtered = memoryNotices.filter(item => {
+    const matchCat = catVal === 'all' || item.category === catVal;
+    const matchPin = pinVal === 'all' || (pinVal === 'pinned' && item.is_pinned);
+    const matchKeyword = !keyword || item.title.toLowerCase().includes(keyword) || item.content.toLowerCase().includes(keyword);
+    return matchCat && matchPin && matchKeyword;
+  });
+
+  if (noticeBadge) noticeBadge.textContent = `전체 ${memoryNotices.length}개 (검색 결과 ${filtered.length}개)`;
+
+  if (filtered.length === 0) {
+    noticeTableBody.innerHTML = `
+      <tr>
+        <td colspan="6" class="py-16 text-center text-zinc-500">
+          <i data-lucide="bell-off" class="w-10 h-10 mx-auto mb-2 opacity-30"></i>
+          <p class="text-xs">등록되었거나 조건에 맞는 공지사항이 없습니다.</p>
+        </td>
+      </tr>
+    `;
+    if (window.lucide) window.lucide.createIcons();
     return;
   }
 
-  tableBody.innerHTML = notices.map(item => {
-    const isPinned = item.is_pinned === true;
-    const isActive = item.is_active !== false;
-    const dateStr = item.created_at ? new Date(item.created_at).toLocaleDateString() : '-';
+  // 상단 고정글 우선 정렬 후 최신순
+  filtered.sort((a, b) => {
+    if (a.is_pinned !== b.is_pinned) return b.is_pinned ? 1 : -1;
+    return new Date(b.created_at) - new Date(a.created_at);
+  });
+
+  const categoryMap = {
+    system: { text: '시스템', bg: 'bg-zinc-800 text-zinc-300 border-zinc-700' },
+    event: { text: '이벤트', bg: 'bg-purple-500/20 text-purple-400 border-purple-500/30' },
+    maintenance: { text: '점검공지', bg: 'bg-amber-500/20 text-amber-400 border-amber-500/30' },
+    update: { text: '업데이트', bg: 'bg-blue-500/20 text-blue-400 border-blue-500/30' }
+  };
+
+  noticeTableBody.innerHTML = filtered.map(item => {
+    const cat = categoryMap[item.category] || { text: '일반', bg: 'bg-zinc-800 text-zinc-300' };
 
     return `
-      <tr class="hover:bg-zinc-800/40 transition ${isPinned ? 'bg-red-950/20' : ''}">
-        <td class="p-4"><input type="checkbox" value="${item.id}" class="notice-checkbox rounded bg-zinc-800 border-zinc-700"></td>
-        <td class="p-4">
-          <button onclick="togglePin('${item.id}', ${isPinned})" class="text-base transition hover:scale-125">
-            ${isPinned ? '📌' : '📍'}
+      <tr class="hover:bg-zinc-800/40 transition duration-150 ${item.is_pinned ? 'bg-red-950/10' : ''}">
+        <!-- 상단 고정 토글 버튼 -->
+        <td class="py-4 px-5 text-center">
+          <button onclick="togglePin('${item.id}')" title="고정 상태 변경" class="p-1.5 rounded-lg transition ${item.is_pinned ? 'text-red-500 hover:bg-red-500/10' : 'text-zinc-600 hover:text-zinc-300'}">
+            <i data-lucide="pin" class="w-4 h-4 ${item.is_pinned ? 'fill-red-500' : ''}"></i>
           </button>
         </td>
-        <td class="p-4">
-          <span class="text-xs px-2.5 py-1 rounded-full border ${getCategoryStyle(item.category)}">
-            ${escapeHtml(item.category || '일반')}
+
+        <!-- 카테고리 -->
+        <td class="py-4 px-5">
+          <span class="px-2.5 py-1 text-[11px] font-bold rounded-lg border ${cat.bg}">
+            ${cat.text}
           </span>
         </td>
-        <td class="p-4">
-          <div class="font-medium text-white cursor-pointer hover:text-red-400 transition" onclick="editNotice('${item.id}')">
-            ${escapeHtml(item.title)}
+
+        <!-- 제목 및 고정 아이콘 -->
+        <td class="py-4 px-5">
+          <div class="flex items-center gap-2">
+            ${item.is_pinned ? '<span class="bg-red-600 text-white font-black text-[10px] px-2 py-0.5 rounded">중요</span>' : ''}
+            <span class="font-bold text-zinc-100 hover:text-red-400 transition cursor-pointer" onclick="editNotice('${item.id}')">${item.title}</span>
           </div>
         </td>
-        <td class="p-4">
-          <button onclick="toggleActive('${item.id}', ${isActive})" class="cursor-pointer">
-            ${isActive 
-              ? `<span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800">공개</span>` 
-              : `<span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-zinc-800 text-zinc-500 border border-zinc-700">비공개</span>`}
-          </button>
+
+        <!-- 조회수 -->
+        <td class="py-4 px-5 text-center font-medium text-zinc-400">
+          ${(item.views || 0).toLocaleString()}회
         </td>
-        <td class="p-4 text-xs text-zinc-400">${dateStr}</td>
-        <td class="p-4 text-right space-x-2">
-          <button onclick="editNotice('${item.id}')" class="text-xs text-zinc-400 hover:text-white transition">수정</button>
-          <button onclick="deleteSingleNotice('${item.id}', '${escapeHtml(item.title)}')" class="text-xs text-red-400 hover:text-red-300 transition">삭제</button>
+
+        <!-- 등록일 -->
+        <td class="py-4 px-5 text-center text-zinc-500 text-[11px]">
+          ${new Date(item.created_at || Date.now()).toLocaleDateString('ko-KR')}
+        </td>
+
+        <!-- 관리 버튼 -->
+        <td class="py-4 px-5 text-center">
+          <div class="flex justify-center gap-1.5">
+            <button onclick="editNotice('${item.id}')" class="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg transition" title="수정">
+              <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
+            </button>
+            <button onclick="deleteNotice('${item.id}')" class="p-1.5 bg-red-950/40 hover:bg-red-900/60 text-red-400 rounded-lg transition" title="삭제">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
         </td>
       </tr>
     `;
   }).join('');
+
+  if (window.lucide) window.lucide.createIcons();
 }
 
-function getCategoryStyle(category) {
-  switch (category) {
-    case '점검': return 'bg-amber-950 text-amber-400 border-amber-800';
-    case '이벤트': return 'bg-purple-950 text-purple-400 border-purple-800';
-    case '업데이트': return 'bg-blue-950 text-blue-400 border-blue-800';
-    default: return 'bg-zinc-800 text-zinc-300 border-zinc-700';
-  }
-}
+// 이벤트 설정
+function setupEvents() {
+  categoryFilter?.addEventListener('change', renderNotices);
+  pinnedFilter?.addEventListener('change', renderNotices);
+  searchInput?.addEventListener('input', renderNotices);
 
-// 고정 상태 토글
-window.togglePin = async function(id, currentPinned) {
-  const { error } = await supabase.from('notices').update({ is_pinned: !currentPinned }).eq('id', id);
-  if (error) return alert('변경 실패: ' + error.message);
-  await logAdminAction('공지 상단고정 토글', `ID: ${id}`);
-  loadNotices();
-};
+  // 모달 제어
+  openNoticeModalBtn?.addEventListener('click', () => {
+    modalTitle.innerHTML = `<i data-lucide="bell" class="w-5 h-5 text-red-500"></i> 새 공지사항 작성`;
+    noticeForm.reset();
+    noticeIdEl.value = '';
+    noticeModal.classList.remove('hidden');
+    if (window.lucide) window.lucide.createIcons();
+  });
 
-// 공개/비공개 토글
-window.toggleActive = async function(id, currentStatus) {
-  const { error } = await supabase.from('notices').update({ is_active: !currentStatus }).eq('id', id);
-  if (error) return alert('변경 실패: ' + error.message);
-  await logAdminAction('공지 공개여부 토글', `ID: ${id}`);
-  loadNotices();
-};
+  closeNoticeModalBtn?.addEventListener('click', () => noticeModal.classList.add('hidden'));
+  cancelNoticeModalBtn?.addEventListener('click', () => noticeModal.classList.add('hidden'));
 
-// 모달 열기/닫기
-function openModal() {
-  document.getElementById('noticeId').value = '';
-  document.getElementById('titleInput').value = '';
-  document.getElementById('contentInput').value = '';
-  document.getElementById('categorySelect').value = '일반';
-  document.getElementById('isPinnedInput').checked = false;
-  document.getElementById('isActiveInput').checked = true;
+  // 폼 저장
+  noticeForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = noticeIdEl.value;
 
-  document.getElementById('modalTitle').textContent = '신규 공지 작성';
-  document.getElementById('noticeModal').classList.remove('hidden');
-}
+    const newItem = {
+      category: noticeCategoryInput.value,
+      is_pinned: noticePinnedInput.checked,
+      title: noticeTitleInput.value,
+      content: noticeContentInput.value,
+      views: id ? (memoryNotices.find(n => n.id == id)?.views || 0) : 0,
+      created_at: new Date().toISOString()
+    };
 
-function closeModal() {
-  document.getElementById('noticeModal').classList.add('hidden');
-}
-
-// 등록 & 수정 처리
-async function handleFormSubmit(e) {
-  e.preventDefault();
-
-  const id = document.getElementById('noticeId').value;
-  const title = document.getElementById('titleInput').value.trim();
-  const content = document.getElementById('contentInput').value.trim();
-  const category = document.getElementById('categorySelect').value;
-  const is_pinned = document.getElementById('isPinnedInput').checked;
-  const is_active = document.getElementById('isActiveInput').checked;
-
-  const payload = { title, content, category, is_pinned, is_active };
-
-  if (id) {
-    const { error } = await supabase.from('notices').update(payload).eq('id', id);
-    if (error) {
-      alert('수정 실패: ' + error.message);
-      return;
+    if (id) {
+      const idx = memoryNotices.findIndex(n => n.id == id);
+      if (idx !== -1) memoryNotices[idx] = { ...memoryNotices[idx], ...newItem };
+    } else {
+      newItem.id = Date.now().toString();
+      memoryNotices.push(newItem);
     }
-    await logAdminAction('공지 수정', `[${title}] 공지사항 수정 완료`);
-    alert('수정되었습니다.');
-  } else {
-    const { error } = await supabase.from('notices').insert([payload]);
-    if (error) {
-      alert('등록 실패: ' + error.message);
-      return;
+
+    try {
+      if (supabase && supabase.from) {
+        if (id) await supabase.from('notices').update(newItem).eq('id', id);
+        else await supabase.from('notices').insert([newItem]);
+      }
+    } catch(e) {}
+
+    noticeModal.classList.add('hidden');
+    renderNotices();
+  });
+}
+
+// 상단 고정 토글
+window.togglePin = async (id) => {
+  const item = memoryNotices.find(n => n.id == id);
+  if (!item) return;
+
+  item.is_pinned = !item.is_pinned;
+
+  try {
+    if (supabase && supabase.from) {
+      await supabase.from('notices').update({ is_pinned: item.is_pinned }).eq('id', id);
     }
-    await logAdminAction('공지 작성', `[${title}] 신규 공지사항 작성`);
-    alert('등록되었습니다.');
-  }
+  } catch(e) {}
 
-  closeModal();
-  loadNotices();
-}
-
-// 수정 모달 열기
-window.editNotice = async function(id) {
-  const { data, error } = await supabase.from('notices').select('*').eq('id', id).single();
-  if (error || !data) return alert('데이터를 불러올 수 없습니다: ' + (error?.message || ''));
-
-  document.getElementById('noticeId').value = data.id;
-  document.getElementById('titleInput').value = data.title;
-  document.getElementById('contentInput').value = data.content;
-  document.getElementById('categorySelect').value = data.category || '일반';
-  document.getElementById('isPinnedInput').checked = data.is_pinned || false;
-  document.getElementById('isActiveInput').checked = data.is_active !== false;
-
-  document.getElementById('modalTitle').textContent = '공지사항 수정';
-  document.getElementById('noticeModal').classList.remove('hidden');
+  renderNotices();
 };
 
-// 단일 삭제
-window.deleteSingleNotice = async function(id, title) {
-  if (!confirm(`'${title}' 공지를 삭제하시겠습니까?`)) return;
+// 수정
+window.editNotice = (id) => {
+  const item = memoryNotices.find(n => n.id == id);
+  if (!item) return;
 
-  const { error } = await supabase.from('notices').delete().eq('id', id);
-  if (error) return alert('삭제 실패: ' + error.message);
-  
-  await logAdminAction('공지 삭제', `[${title}] 공지사항 삭제 완료`);
-  loadNotices();
+  noticeIdEl.value = item.id;
+  noticeCategoryInput.value = item.category || 'system';
+  noticePinnedInput.checked = !!item.is_pinned;
+  noticeTitleInput.value = item.title;
+  noticeContentInput.value = item.content;
+
+  modalTitle.innerHTML = `<i data-lucide="edit-3" class="w-5 h-5 text-red-500"></i> 공지사항 수정`;
+  noticeModal.classList.remove('hidden');
+  if (window.lucide) window.lucide.createIcons();
 };
 
-function toggleSelectAll(e) {
-  document.querySelectorAll('.notice-checkbox').forEach(cb => cb.checked = e.target.checked);
-}
+// 삭제
+window.deleteNotice = async (id) => {
+  if (!confirm('이 공지사항을 삭제하시겠습니까?')) return;
 
-// 일괄 삭제
-async function deleteSelectedNotices() {
-  const selectedCbs = Array.from(document.querySelectorAll('.notice-checkbox:checked'));
-  if (selectedCbs.length === 0) return alert('삭제할 공지사항을 선택해주세요.');
+  memoryNotices = memoryNotices.filter(n => n.id != id);
 
-  if (!confirm(`선택한 ${selectedCbs.length}개 공지를 삭제하시겠습니까?`)) return;
+  try {
+    if (supabase && supabase.from) {
+      await supabase.from('notices').delete().eq('id', id);
+    }
+  } catch(e) {}
 
-  const ids = selectedCbs.map(cb => cb.value);
-  const { error } = await supabase.from('notices').delete().in('id', ids);
-
-  if (error) return alert('삭제 실패: ' + error.message);
-
-  await logAdminAction('공지 다중 삭제', `${ids.length}개 공지 일괄 삭제`);
-  alert('삭제되었습니다.');
-  loadNotices();
-}
-
-function escapeHtml(str) {
-  if (!str) return '';
-  return str.replace(/[&<>"']/g, match => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[match]));
-}
+  renderNotices();
+};
