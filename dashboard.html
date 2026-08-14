@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>대시보드 홈 - SUPREME ADMIN</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js 라이브러리 불러오기 -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -84,7 +85,7 @@
       <!-- 방문자 트렌드 그래프 -->
       <div class="lg:col-span-2 bg-zinc-900 border border-zinc-800 p-6 rounded-2xl">
         <h3 class="text-sm font-bold text-zinc-200 mb-4">주간 방문 트렌드</h3>
-        <div class="h-64">
+        <div class="h-64 relative w-full">
           <canvas id="viewsChart"></canvas>
         </div>
       </div>
