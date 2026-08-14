@@ -4,8 +4,8 @@
  */
 const CONFIG = {
   API_BASE_URL: "https://your-api-domain.com/api", // 실제 API endpoint
-  SUPABASE_URL: "https://your-supabase-project.supabase.co",
-  SUPABASE_ANON_KEY: "YOUR_SUPABASE_ANON_KEY",
+  SUPABASE_URL: "https://henrnvbccfrqrtgbosle.supabase.co/rest/v1/",
+  SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhlbnJudmJjY2ZycXJ0Z2Jvc2xlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1NjQ0OTcsImV4cCI6MjEwMjE0MDQ5N30.krLwR2fpLrB4SJNIsiv06UzGMwOPKitI9KoYRx-fYq0",
   ITEMS_PER_PAGE: 20
 };
 
