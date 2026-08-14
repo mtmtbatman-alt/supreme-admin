@@ -1,75 +1,53 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>로그인 - SUPREME ADMIN</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="css/style.css">
-  <script src="https://unpkg.com/lucide@latest"></script>
-</head>
-<body class="bg-zinc-950 text-white min-h-screen flex items-center justify-center p-4 selection:bg-red-600 selection:text-white">
-
-  <!-- 배경 분위기 효과 -->
-  <div class="fixed inset-0 overflow-hidden pointer-events-none">
-    <div class="absolute -top-40 -left-40 w-96 h-96 bg-red-600/10 rounded-full blur-3xl"></div>
-    <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-red-900/10 rounded-full blur-3xl"></div>
-  </div>
-
-  <!-- 로그인 카드 -->
-  <div class="w-full max-w-md bg-zinc-900/90 border border-zinc-800 backdrop-blur-xl p-8 rounded-2xl shadow-2xl relative z-10">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>슈프림 어드민 - 로그인</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Header -->
-    <div class="text-center mb-8">
-      <div class="inline-flex items-center gap-2 mb-2">
-        <div class="w-3 h-3 rounded-full bg-red-600 animate-pulse"></div>
-        <h1 class="text-2xl font-black text-red-600 tracking-wider">SUPREME ADMIN</h1>
-      </div>
-      <p class="text-xs text-zinc-400">최고 관리자 전용 인증 센터</p>
+    <!-- Supabase JS SDK (반드시 첫 번째) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase Config (두 번째) -->
+    <script src="js/config.js"></script>
+    <!-- Login Logic (마지막) -->
+    <script src="js/login.js" defer></script>
+</head>
+<body class="bg-[#0b0b0b] text-white flex items-center justify-center h-screen m-0">
+
+    <div class="bg-[#141416] border border-[#222226] p-8 rounded-2xl w-[420px] shadow-2xl">
+        <div class="text-center mb-8">
+            <h1 class="text-red-600 font-bold text-xl tracking-wider mb-1">● SUPREME ADMIN</h1>
+            <p class="text-gray-400 text-xs">최고 관리자 전용 인증 센터</p>
+        </div>
+
+        <form id="loginForm" class="space-y-5">
+            <div>
+                <label class="block text-xs text-gray-400 mb-1.5">관리자 이메일</label>
+                <input type="email" id="email" required value="mtmtbatman@gmail.com"
+                    class="w-full bg-[#1e1e24] border border-[#2a2a32] rounded-lg px-4 py-3 text-sm text-white focus:outline-none focus:border-red-600 transition-colors">
+            </div>
+
+            <div>
+                <div class="flex justify-between items-center mb-1.5">
+                    <label class="text-xs text-gray-400">비밀번호</label>
+                    <a href="#" class="text-xs text-gray-500 hover:text-gray-300">비밀번호 재설정</a>
+                </div>
+                <input type="password" id="password" value="********"
+                    class="w-full bg-[#1e1e24] border border-[#2a2a32] rounded-lg px-4 py-3 text-sm text-white focus:outline-none focus:border-red-600 transition-colors">
+            </div>
+
+            <button type="submit" 
+                class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-medium py-3 rounded-lg text-sm shadow-lg shadow-red-900/30 transition-all">
+                대시보드 로그인
+            </button>
+        </form>
+
+        <div class="mt-8 pt-4 border-t border-[#222226] text-center">
+            <span class="text-[11px] text-gray-500">보안 등급: High Security Level 3 Enabled</span>
+        </div>
     </div>
 
-    <!-- Login Form -->
-    <form id="loginForm" class="space-y-5" onsubmit="return false;">
-      <div>
-        <label for="email" class="block text-xs text-zinc-400 mb-1.5 font-medium">관리자 이메일</label>
-        <div class="relative">
-          <i data-lucide="mail" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500"></i>
-          <input type="email" id="email" required value="mtmtbatman@gmail.com" placeholder="admin@supreme.com" class="w-full bg-zinc-800/80 border border-zinc-700/80 text-xs text-white pl-10 pr-4 py-3 rounded-xl outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition">
-        </div>
-      </div>
-
-      <div>
-        <div class="flex justify-between items-center mb-1.5">
-          <label for="password" class="block text-xs text-zinc-400 font-medium">비밀번호</label>
-          <a href="#" id="forgotPasswordBtn" class="text-[11px] text-zinc-500 hover:text-red-400 transition">비밀번호 재설정</a>
-        </div>
-        <div class="relative">
-          <i data-lucide="lock" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500"></i>
-          <input type="password" id="password" required value="12345678" placeholder="••••••••" class="w-full bg-zinc-800/80 border border-zinc-700/80 text-xs text-white pl-10 pr-4 py-3 rounded-xl outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition">
-        </div>
-      </div>
-
-      <!-- 알림 / 메시지 창 -->
-      <div id="statusMessage" class="hidden p-3 rounded-xl text-xs text-center font-medium transition-all"></div>
-
-      <!-- Submit 버튼 -->
-      <button type="button" id="loginBtn" class="w-full bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white font-bold text-xs py-3.5 rounded-xl shadow-lg shadow-red-600/30 transition flex items-center justify-center gap-2">
-        <i data-lucide="log-in" class="w-4 h-4"></i> 대시보드 로그인
-      </button>
-
-      <!-- 체험/데모 모드 바로가기 -->
-      <button type="button" id="demoBtn" class="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium text-xs py-2.5 rounded-xl transition border border-zinc-700/50 flex items-center justify-center gap-1.5">
-        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-zinc-400"></i> 체험 모드 즉시 접속
-      </button>
-    </form>
-
-    <div class="mt-8 text-center border-t border-zinc-800/80 pt-4">
-      <p class="text-[11px] text-zinc-500">
-        보안 등급: High Security Level 3 Enabled
-      </p>
-    </div>
-  </div>
-
-  <script type="module" src="js/login.js"></script>
 </body>
 </html>

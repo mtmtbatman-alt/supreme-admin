@@ -1,17 +1,13 @@
-// Supabase 클라이언트 연결
-const supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
-
 document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.getElementById('loginForm');
 
   if (loginForm) {
-    loginForm.addEventListener('submit', async (e) => {
+    loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
       const emailInput = document.getElementById('email').value.trim();
-      const targetEmail = 'mtmtbatman@gmail.com'; // 관리자 이메일 고정
+      const targetEmail = 'mtmtbatman@gmail.com'; // 관리자 이메일
 
-      // 입력한 이메일이 관리자 이메일과 일치하는지 확인
       if (emailInput === targetEmail) {
         const adminUser = {
           name: '최고관리자',
